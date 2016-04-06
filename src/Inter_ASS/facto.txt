@@ -1,4 +1,4 @@
-load 10,r1
+load NAN,10,r1
 load r1,0,r2
 
 fact:
