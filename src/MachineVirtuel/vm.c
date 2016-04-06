@@ -1,19 +1,29 @@
 #include <stdio.h>
+<<<<<<< HEAD
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+=======
+>>>>>>> dd45038043933b22af22f9f773a2f078940e860b
 
 #define NUM_REGS 5
 unsigned regs[ NUM_REGS ];
 
+<<<<<<< HEAD
 unsigned program[] = { 0x68400141, 0x68400144 , 0x98000000};
+=======
+unsigned program[] = { 0x68600141, 0x68600142 , 0x98000000};
+>>>>>>> dd45038043933b22af22f9f773a2f078940e860b
 
 /* program counter */
 int pc = 0;
 
+<<<<<<< HEAD
 /* Fichier de sorti */
 FILE * fichier_sortie;
 
+=======
+>>>>>>> dd45038043933b22af22f9f773a2f078940e860b
 /* fetch the next word from the program */
 int fetch()
 {
@@ -48,6 +58,7 @@ void eval()
     {
     case 0:
       /* nop */
+<<<<<<< HEAD
       fprintf(fichier_sortie, "nop\n" );
       break;
     case 1:
@@ -102,10 +113,38 @@ void eval()
       /* and */
       fprintf(fichier_sortie,"and\n");
 
+=======
+      printf( "nop\n" );
+      break;
+    case 1:
+      /* add */
+      printf("add\n");
+      regs[reg2] = regs[reg1]+o;
+      break;
+    case 2:
+      /* sub */
+      printf("sub\n");
+      regs[reg2] = regs[reg1]-o;
+      break;
+    case 3:
+      /* mult */
+      printf("mult\n");
+      regs[reg2] = regs[reg1]*o;
+      break;
+    case 4:
+      /* div */
+      printf("div\n");
+      regs[reg2] = regs[reg1]/o;
+      break;
+    case 5:
+      /* and */
+      printf("and\n");
+>>>>>>> dd45038043933b22af22f9f773a2f078940e860b
       regs[reg2] = regs[reg1]&o;
       break;
     case 6:
       /* or */
+<<<<<<< HEAD
       fprintf(fichier_sortie,"or\n");
       if(flagInt==1)
 	{
@@ -259,6 +298,67 @@ void eval()
       break;
     default:
       fprintf(fichier_sortie,"error!!\n");
+=======
+      printf("or\n");
+      regs[reg2] = regs[reg1]+o;
+      break;
+    case 7:
+      /* xor */
+      printf("xor\n");
+      break;
+    case 8:
+      /* shl */
+      printf("shl\n");
+      break;
+    case 9:
+      /* shr */
+      printf("shr\n");
+      break;
+    case 10:
+      /* slt */
+      printf("slt\n");
+      break;
+    case 11:
+      /* sle */
+      printf("sle\n");
+      break;
+    case 12:
+      /* seq */
+      printf("seq\n");
+      break;
+    case 13:
+      /* load */
+      printf( "load r%d a r%d + #%d\n", reg2, reg1, o );
+      regs[reg2] = regs[reg1]+o;
+      break;
+    case 14:
+      /* store */
+      printf("store\n");
+      break;
+    case 15:
+      /* jmp */
+      printf("jmp\n");
+      break;
+    case 16:
+      /* braz */
+      printf("braz\n");
+      break;
+    case 17:
+      /* branz */
+      printf("branz\n");
+      break;
+    case 18:
+      /* scall */
+      printf("scall\n");
+      break;
+    case 19:
+      /* stop */
+      printf("Stop\n");
+      running = 0;
+      break;
+    default:
+      printf("error!!\n");
+>>>>>>> dd45038043933b22af22f9f773a2f078940e860b
       break;
     }
 }
@@ -267,10 +367,17 @@ void eval()
 void showRegs()
 {
   int i;
+<<<<<<< HEAD
   fprintf(fichier_sortie, "regs = " );
   for( i=0; i<NUM_REGS; i++ )
     fprintf(fichier_sortie, "%08X ", regs[ i ] );
   fprintf(fichier_sortie, "\n" );
+=======
+  printf( "regs = " );
+  for( i=0; i<NUM_REGS; i++ )
+    printf( "%08X ", regs[ i ] );
+  printf( "\n" );
+>>>>>>> dd45038043933b22af22f9f773a2f078940e860b
 }
 
 void run()
@@ -285,6 +392,7 @@ void run()
   showRegs();
 }
 
+<<<<<<< HEAD
 void afficher(char file_output[50])
 {
   if(strcmp(file_output,"toto")==0)
@@ -330,5 +438,10 @@ int main( int argc, char * argv[] )
   run();
   fclose(fichier_sortie);
   afficher(file_output);
+=======
+int main( int argc, const char * argv[] )
+{
+  run();
+>>>>>>> dd45038043933b22af22f9f773a2f078940e860b
   return 0;
 }
