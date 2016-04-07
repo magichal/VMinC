@@ -1,0 +1,5 @@
+load NAN,0,r2
+fact: _
+load r1,0,r2
+branp r1,fact:
+stop	
