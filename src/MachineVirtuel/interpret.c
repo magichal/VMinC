@@ -18,12 +18,8 @@ void createCode (const char *filepath,unsigned Commande[1000]){
 	
 	
 	Tableau *tab = malloc(sizeof(Tableau));
-	Tableau *courant = malloc(sizeof(Tableau));
-	
 		
 	AnalyseText(filepath, tab);
-	int i=0;
-	courant=tab;
 	
 	AnalyseLexique(tab,Commande);
 	int j=0;
