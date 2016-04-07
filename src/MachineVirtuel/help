@@ -1,10 +1,16 @@
-usage : ./vm [-i NAME] [-o NAME]
+usage : ./vm [-i NAME] [-o NAME] [-l] [-e]
 
 -i FILENAME  	       Permet de préciser le nom du fichier en entrée
    		       S'il n'est pas précisé prends le fichier test
 
 -o FILENAME  	       Permet de préciser le nom du fichier en sortie
    		       S'il n'est pas précisé affiche dans le terminal
+
+-e		       Permet d'enregistrer l'état des registres pour
+		       une utilisation ultérieur.
+
+-l		       Permet de charger l'etat des registres enregistrer
+		       precedement avec l'option -e
 
 -h 		       Affiche l'aide
 

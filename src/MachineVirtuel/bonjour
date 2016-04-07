@@ -1,4 +1,5 @@
 VMinC programme simulant le CPU de MIPS-X
 version 1.0 [linux 64-bit]
+[AIDE] -h permet d'afficher l'aide
 Auteurs: Neau Guillaume et Rigaud Michael
 

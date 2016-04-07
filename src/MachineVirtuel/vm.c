@@ -2,11 +2,13 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
+#include "interpret.h"
 
 #define NUM_REGS 5
 unsigned regs[ NUM_REGS ];
 
-unsigned program[] = { 0x68600141, 0x68600142 , 0x98000000};
+unsigned program[10000];
 
 /* program counter */
 int pc = 0;
@@ -228,13 +230,13 @@ void eval()
     case 15:
       /* jmp */
       fprintf(fichier_sortie,"jmp\n");
-      regs[reg2]=pc+1;
+      //      regs[reg2]=pc+1;
       pc = o;
       break;
     case 16:
       /* braz */
       fprintf(fichier_sortie,"braz\n");
-      if(reg2==0)
+      if(regs[reg1]==0)
 	{
 	  pc = o;
 	}
@@ -267,7 +269,7 @@ void eval()
 void showRegs()
 {
   int i;
-  fprintf(fichier_sortie, "regs = " );
+  //  fprintf(fichier_sortie, "regs = " );
   for( i=0; i<NUM_REGS; i++ )
     fprintf(fichier_sortie, "%08X ", regs[ i ] );
   fprintf(fichier_sortie, "\n" );
@@ -285,8 +287,14 @@ void run()
   showRegs();
 }
 
-void afficher(char file_output[50])
+void afficher(char file_output[50], int e)
 {
+  if(e==1)
+    {
+      fichier_sortie = fopen(".config","w");
+      showRegs();
+      fclose(fichier_sortie);
+    }
   if(strcmp(file_output,"toto")==0)
     {
       system("cat toto;rm toto");
@@ -299,14 +307,35 @@ void afficher(char file_output[50])
   return ;
 }
 
+void load()
+{
+  FILE * config = fopen(".config","r");
+  int i=0;
+  char mot[50];
+  char mot2[50];
+  
+  while(fgets(mot,9,config)!=NULL)
+    {
+      sprintf(mot2,"0x%s",mot);
+      sscanf(mot2,"%X",&regs[i]);
+      i++;
+      fgets(mot,2,config);      
+    }
+  fclose(config);
+  return;
+}
+
 
 int main( int argc, char * argv[] )
 {
   int opt;
-  char file_input[50] = "test";
+  char file_input[50] = "facto.txt";
   char file_output[50] = "toto";
-  
-  while((opt = getopt(argc,argv,"i:o:h"))!= -1)
+  clock_t t1,t2;
+  long clk_tck = CLOCKS_PER_SEC;
+  int enregistrer = 0;
+    
+  while((opt = getopt(argc,argv,"i:o:leh"))!= -1)
     {
       switch(opt)
 	{
@@ -316,8 +345,14 @@ int main( int argc, char * argv[] )
 	case 'o':
 	  strcpy(file_output,optarg);
 	  break;
+	case 'l':
+	  load();
+	  break;
 	case '?':
 	  return 0;
+	  break;
+	case 'e':
+	  enregistrer = 1;
 	  break;
 	case 'h':
 	  system("cat help");
@@ -327,8 +362,12 @@ int main( int argc, char * argv[] )
     }
   fichier_sortie = fopen(file_output,"w");
   system("cat bonjour");
+  createCode(file_input,program);
+  t1 = clock();
   run();
+  t2 = clock();
+  fprintf(fichier_sortie,"Temps ecoulé par instruction: %lf\n",(double)(t2-t1)/(double)(clk_tck*(sizeof(program)/4)));
   fclose(fichier_sortie);
-  afficher(file_output);
+  afficher(file_output, enregistrer);
   return 0;
 }

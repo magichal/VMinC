@@ -1,0 +1,11 @@
+load NAN,10,r1
+load r1,0,r2
+
+fact: _ 
+sub	r2,1,r2
+braz r2,end:
+mult r2,r1,r1
+jmp	fact:
+
+end: _
+stop
