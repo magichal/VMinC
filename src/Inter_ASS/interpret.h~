@@ -9,7 +9,7 @@
 //regname r1,r2,r3,r4
 // %08X,letruc 
 
-
+extern const FILE * log;
 
 typedef struct Tableau_ Tableau;
 struct Tableau_{

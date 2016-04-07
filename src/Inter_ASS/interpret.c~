@@ -14,7 +14,7 @@ char * bin (unsigned long int i)
 
 
 void createCode (const char *filepath,unsigned Commande[1000]){ 
-	system("rm logfichier.txt");
+	
 	
 	
 	Tableau *tab = malloc(sizeof(Tableau));

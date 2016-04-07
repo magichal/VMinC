@@ -1,0 +1,6 @@
+default: Compile
+
+Compile: 
+	gcc -o -Wall interpret interpret.c Auto_compil.c
+	
+clean: rm *.o 
