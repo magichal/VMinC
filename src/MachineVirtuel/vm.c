@@ -5,19 +5,23 @@
 #include <time.h>
 #include "interpret.h"
 
+/* Nombre de registre admissible*/
 #define NUM_REGS 5
+/* Registre */
 unsigned regs[ NUM_REGS ];
-
+/* Contient les instructions */
 unsigned program[10000];
-
 /* program counter */
 int pc = 0;
-
-
 /* Fichier de sorti */
 FILE * fichier_sortie;
+/* the VM runs until this flag becomes 0 */
+int running = 1;
 
-/* fetch the next word from the program */
+
+/* fetch la nouvelle instruction 
+   output: l'intruction suivante en hexa
+*/
 int fetch()
 {
   return program[ pc++ ];
@@ -30,8 +34,9 @@ int reg2     = 0;
 int o     = 0;
 int flagInt      = 0;
 
-/* decode a word */
-
+/* decode un mot 
+   input: instr - l'instruction en hexa a decoder
+*/
 void decode( int instr )
 {
   operation = (instr & 0xF8000000) >> 27;
@@ -41,10 +46,7 @@ void decode( int instr )
   flagInt      = (instr & 0x200000  ) >> 21;
 }
 
-/* the VM runs until this flag becomes 0 */
-int running = 1;
-
-/* evaluate the last decoded instruction */
+/* evaluate la derniere instruction */
 void eval()
 {
   switch( operation )
@@ -55,7 +57,7 @@ void eval()
       break;
     case 1:
       /* add */
-      fprintf(fichier_sortie,"add\n");
+      fprintf(fichier_sortie,"add(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
 	  regs[reg2] = regs[reg1]+regs[o];
@@ -67,7 +69,7 @@ void eval()
       break;
     case 2:
       /* sub */
-      fprintf(fichier_sortie,"sub\n");
+      fprintf(fichier_sortie,"sub(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
 	  regs[reg2] = regs[reg1]-regs[o];
@@ -79,7 +81,7 @@ void eval()
       break;
     case 3:
       /* mult */
-      fprintf(fichier_sortie,"mult\n");
+      fprintf(fichier_sortie,"mult(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
 	  regs[reg2] = regs[reg1]*regs[o];
@@ -91,7 +93,7 @@ void eval()
       break;
     case 4:
       /* div */
-      fprintf(fichier_sortie,"div\n");
+      fprintf(fichier_sortie,"div(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
 	  regs[reg2] = regs[reg1]/regs[o];
@@ -103,12 +105,12 @@ void eval()
       break;
     case 5:
       /* and */
-      fprintf(fichier_sortie,"and\n");
+      fprintf(fichier_sortie,"and(r%d,r%d,%d)\n", reg1, reg2, o);
       regs[reg2] = regs[reg1]&o;
       break;
     case 6:
       /* or */
-      fprintf(fichier_sortie,"or\n");
+      fprintf(fichier_sortie,"or(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
 	  regs[reg2] = regs[reg1]|regs[o];
@@ -120,7 +122,7 @@ void eval()
       break;
     case 7:
       /* xor */
-      fprintf(fichier_sortie,"xor\n");
+      fprintf(fichier_sortie,"xor(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
 	  regs[reg2] = regs[reg1]^regs[o];
@@ -132,7 +134,7 @@ void eval()
       break;
     case 8:
       /* shl */
-      fprintf(fichier_sortie,"shl\n");
+      fprintf(fichier_sortie,"shl(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
 	  regs[reg2] = regs[reg1]<<regs[o];
@@ -144,7 +146,7 @@ void eval()
       break;
     case 9:
       /* shr */
-      fprintf(fichier_sortie,"shr\n");
+      fprintf(fichier_sortie,"shr(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
 	  regs[reg2] = regs[reg1]>>regs[o];
@@ -156,7 +158,7 @@ void eval()
       break;
     case 10:
       /* slt */
-      fprintf(fichier_sortie,"slt\n");
+      fprintf(fichier_sortie,"slt(r%d,r%d,%d)\n", reg1, reg2, o);
       if (regs[reg1]<o && flagInt==0)
 	{
 	  regs[reg2] = 1;
@@ -172,7 +174,7 @@ void eval()
       break;
     case 11:
       /* sle */
-      fprintf(fichier_sortie,"sle\n");
+      fprintf(fichier_sortie,"sle(r%d,r%d,%d)\n", reg1, reg2, o);
       if (flagInt==0 &&regs[reg1]<=o)
 	{
 	  regs[reg2] = 1;
@@ -188,7 +190,7 @@ void eval()
       break;
     case 12:
       /* seq */
-      fprintf(fichier_sortie,"seq\n");
+      fprintf(fichier_sortie,"seq(r%d,r%d,%d)\n", reg1, reg2, o);
       if (flagInt==0 && regs[reg1]==o)
 	{
 	  regs[reg2] = 1;
@@ -204,7 +206,7 @@ void eval()
       break;
     case 13:
       /* load */
-      fprintf(fichier_sortie, "load r%d a r%d + #%d\n", reg2, reg1, o );
+      fprintf(fichier_sortie, "load(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
 	  regs[reg2] = regs[reg1]+regs[o];
@@ -216,7 +218,7 @@ void eval()
       break;
     case 14:
       /* store */
-      fprintf(fichier_sortie,"store\n");
+      fprintf(fichier_sortie,"store(r%d,r%d,%d)\n", reg1, reg2, o);
       if(reg1+o<5)
 	{
 	  regs[reg1+o] = regs[reg2];
@@ -229,13 +231,13 @@ void eval()
       break;
     case 15:
       /* jmp */
-      fprintf(fichier_sortie,"jmp\n");
+      fprintf(fichier_sortie,"jmp(%d)\n",o);
       //      regs[reg2]=pc+1;
       pc = o;
       break;
     case 16:
       /* braz */
-      fprintf(fichier_sortie,"braz\n");
+      fprintf(fichier_sortie,"braz(r%d,%d)\n",reg1,o);
       if(regs[reg1]==0)
 	{
 	  pc = o;
@@ -243,7 +245,7 @@ void eval()
       break;
     case 17:
       /* branz */
-      fprintf(fichier_sortie,"branz\n");
+      fprintf(fichier_sortie,"branz(r%d,%d)\n",reg2,o);
       if(reg2!=0)
 	{
 	  pc = o;
@@ -265,16 +267,16 @@ void eval()
     }
 }
 
-/* display all registers as 4-digit hexadecimal words */
+/* Permet d afficher tous les registres en hexa */
 void showRegs()
 {
   int i;
-  //  fprintf(fichier_sortie, "regs = " );
   for( i=0; i<NUM_REGS; i++ )
     fprintf(fichier_sortie, "%08X ", regs[ i ] );
   fprintf(fichier_sortie, "\n" );
 }
 
+/* Permet de lancer l'execution du programme */
 void run()
 {
   while( running )
@@ -287,6 +289,10 @@ void run()
   showRegs();
 }
 
+/* Permet de gerer la sorti du programme 
+   input: file_output - la sortie du programme
+          e           - indique s il faut enregistrer l etat des registre dans .config
+*/
 void afficher(char file_output[50], int e)
 {
   if(e==1)
@@ -307,6 +313,7 @@ void afficher(char file_output[50], int e)
   return ;
 }
 
+/* Permet de charger l etat des registre */
 void load()
 {
   FILE * config = fopen(".config","r");
@@ -355,18 +362,20 @@ int main( int argc, char * argv[] )
 	  enregistrer = 1;
 	  break;
 	case 'h':
-	  system("cat help");
+	  system("cat .help");
 	  return 0;
 	  break;
 	}
     }
   fichier_sortie = fopen(file_output,"w");
-  system("cat bonjour");
+  system("cat .bonjour");
   createCode(file_input,program);
   t1 = clock();
   run();
   t2 = clock();
-  fprintf(fichier_sortie,"Temps ecoulé par instruction: %lf\n",(double)(t2-t1)/(double)(clk_tck*(sizeof(program)/4)));
+  fprintf(fichier_sortie,"\n\n-------------------------------------------\n \
+Temps ecoulé par instruction: %lf s\n-------------------------------------------\n"\
+	  ,(double)(t2-t1)/(double)(clk_tck*(pc)));
   fclose(fichier_sortie);
   afficher(file_output, enregistrer);
   return 0;
