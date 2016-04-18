@@ -309,16 +309,16 @@ void afficher(char file_output[50], int e)
       showRegs();
       fclose(fichier_sortie);
     }
-  if(strcmp(file_output,"toto")==0)
+  if(strcmp(file_output,"fichier_temporaire")==0)
     {
       printf("\n -------------------------------------------\n");
-      system("cat toto;rm toto");
+      system("cat fichier_temporaire;rm fichier_temporaire");
     }
   else
     {
       printf("Sortie enregistrer dans %s\n", file_output);
     }
-  
+  system("mv logfichier.txt Log/logfichier.txt");
   return ;
 }
 
@@ -345,8 +345,8 @@ void load()
 int main( int argc, char * argv[] )
 {
   int opt;
-  char file_input[50] = "facto.txt";
-  char file_output[50] = "toto";
+  char file_input[50] = "Fichier_test/facto.txt";
+  char file_output[50] = "fichier_temporaire";
   clock_t t1,t2;
   long clk_tck = CLOCKS_PER_SEC;
   int enregistrer = 0;
