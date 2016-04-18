@@ -598,9 +598,28 @@ void AnalyseLexique(Tableau * tab,unsigned Commande[10000]){
 				i++;
 				break;
 			/* scall */
-			case 18:
-				bopcode=0b10010;
-				fprintf(logfichier,"error scall not implemented\n");
+		case 18:;
+				bopcode=0b10010<<27;
+				
+				int variable=0;
+				
+				fprintf(logfichier,"\n");
+				fprintf(logfichier,"Code : %s\n",tab->mot);
+				* breg1=0b00000<<22;
+				* bparam=0<<5;
+				* breg2=0b00000;
+				tab=tab->suivant;
+				variable=atoi(tab->mot);
+				fprintf(logfichier,"Arg 1 : %s\n",tab->mot);
+				fprintf(logfichier,"Arg 1 : %d\n",variable);
+
+				
+				* boo=variable<<21;
+				
+
+				INSTRUC= bopcode | *breg1 | *boo | *bparam | *breg2;
+				Commande[i]=INSTRUC;
+				i++;
 				break;
 			/* stop */
 			case 19:

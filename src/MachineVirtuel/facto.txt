@@ -1,5 +1,5 @@
-load NAN,10,r1
-load r1,0,r2
+add NAN,10,r1
+add r1,0,r2
 
 fact: _ 
 sub	r2,1,r2

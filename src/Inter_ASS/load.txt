@@ -1,5 +1,0 @@
-load NAN,0,r2
-load r1,0,r2
-load r3,5,r4
-load r1,r3,r5
-stop

@@ -1,0 +1,5 @@
+add NAN,0,r2
+add r1,0,r2
+add r3,5,r4
+add r1,r3,r5
+stop

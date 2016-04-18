@@ -11,19 +11,22 @@
 unsigned regs[ NUM_REGS ];
 /* Contient les instructions */
 unsigned program[10000];
+int data[1000];
 /* program counter */
 int pc = 0;
 /* Fichier de sorti */
 FILE * fichier_sortie;
 /* the VM runs until this flag becomes 0 */
 int running = 1;
-
+int compt=0;
 
 /* fetch la nouvelle instruction 
    output: l'intruction suivante en hexa
 */
 int fetch()
 {
+  compt++;
+  regs[0]=0;
   return program[ pc++ ];
 }
 
@@ -209,30 +212,21 @@ void eval()
       fprintf(fichier_sortie, "load(r%d,r%d,%d)\n", reg1, reg2, o);
       if(flagInt==1)
 	{
-	  regs[reg2] = regs[reg1]+regs[o];
+	  regs[reg2] = data[regs[reg1]+regs[o]];
 	}
       else
 	{
-	  regs[reg2] = regs[reg1]+o;
+	  regs[reg2] = data[regs[reg1]+o];
 	}
       break;
     case 14:
       /* store */
       fprintf(fichier_sortie,"store(r%d,r%d,%d)\n", reg1, reg2, o);
-      if(reg1+o<5)
-	{
-	  regs[reg1+o] = regs[reg2];
-	}
-      else
-	{
-	  fprintf(fichier_sortie,"error\n");
-	}
-      
+      data[regs[reg1]+regs[o]] = regs[reg2];
       break;
     case 15:
       /* jmp */
       fprintf(fichier_sortie,"jmp(%d)\n",o);
-      //      regs[reg2]=pc+1;
       pc = o;
       break;
     case 16:
@@ -253,8 +247,18 @@ void eval()
       break;
     case 18:
       /* scall */
-      fprintf(fichier_sortie,"scall\n");
-      
+      fprintf(fichier_sortie,"scall(%d)\n",flagInt);
+      char mot[50];
+      if (flagInt==0)
+      {
+	printf("Quel valeur mettre dans le registre 1\n");
+	scanf("%s",mot);
+	regs[1]=atoi(mot);
+      }
+      else if (flagInt==1)
+      {
+	printf("registre 1: %d\n",regs[1]);
+      }
       break;
     case 19:
       /* stop */
@@ -273,12 +277,16 @@ void showRegs()
   int i;
   for( i=0; i<NUM_REGS; i++ )
     fprintf(fichier_sortie, "%08X ", regs[ i ] );
-  fprintf(fichier_sortie, "\n" );
+  fprintf(fichier_sortie,"(");
+  for( i=0; i<NUM_REGS; i++ )
+    fprintf(fichier_sortie, "%d ", regs[ i ] );
+  fprintf(fichier_sortie, ")\n" );
 }
 
 /* Permet de lancer l'execution du programme */
 void run()
 {
+  fprintf(fichier_sortie, "Etat initiale des registres:\n");
   while( running )
     {
       showRegs();
@@ -303,6 +311,7 @@ void afficher(char file_output[50], int e)
     }
   if(strcmp(file_output,"toto")==0)
     {
+      printf("\n -------------------------------------------\n");
       system("cat toto;rm toto");
     }
   else
@@ -374,8 +383,9 @@ int main( int argc, char * argv[] )
   run();
   t2 = clock();
   fprintf(fichier_sortie,"\n\n-------------------------------------------\n \
-Temps ecoulé par instruction: %lf s\n-------------------------------------------\n"\
-	  ,(double)(t2-t1)/(double)(clk_tck*(pc)));
+Temps ecoulé par instruction: %lf s\n\
+Nombre d'instruction: %d\n-------------------------------------------\n"\
+	  ,(double)(t2-t1)/(double)(clk_tck*(pc)), compt);
   fclose(fichier_sortie);
   afficher(file_output, enregistrer);
   return 0;

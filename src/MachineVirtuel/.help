@@ -1,7 +1,7 @@
 usage : ./vm [-i NAME] [-o NAME] [-l] [-e]
 
 -i FILENAME  	       Permet de préciser le nom du fichier en entrée
-   		       S'il n'est pas précisé prends le fichier test
+   		       S'il n'est pas précisé prends le fichier facto.txt
 
 -o FILENAME  	       Permet de préciser le nom du fichier en sortie
    		       S'il n'est pas précisé affiche dans le terminal

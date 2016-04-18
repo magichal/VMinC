@@ -1,83 +1,28 @@
-Ouverture de : facto.txt
+Ouverture de : scall.txt
 Fichier trouve, traitement en cours
 
 Instructions lues : 
 
-load NAN,10,r1
-load r1,0,r2
-
-fact: _ 
-sub	r2,1,r2
-braz r2,end:
-mult r2,r1,r1
-jmp	fact:
-
-end: _
+scall 0
+scall 1
 stop
 
 Fin instructions. 
 
 Debut de generation des instructions binaire
 
-Code : load
-Arg1 : NAN
-breg1 :00000000
-Arg2 : 10
-o : 00000000
-bparam : 00000140
-Arg3 : r1
-breg2 : 00000001
+Code : scall
+Arg 1 : 0
+Arg 1 : 0
 
-Code : load
-Arg1 : r1
-breg1 :00400000
-Arg2 : 0
-o : 00000000
-bparam : 00000000
-Arg3 : r2
-breg2 : 00000002
-
-Code nop : fact:
-
-Code : sub
-Arg1 : r2
-breg1 :00800000
-Arg2 : 1
-o : 00000000
-bparam : 00000020
-Arg3 : r2
-breg2 : 00000002
-
-Code : braz
-Arg1 : r2
-breg1 : 00800000
-Arg2 : end:
-bparam : 000000E0
-
-Code : mult
-Arg1 : r2
-breg1 :00800000
-Arg2 : r1
-o : 00200000
-bparam : 00000020
-Arg3 : r1
-breg2 : 00000001
-
-Code : jmp
-Arg 1 : fact:
-
-Code nop : end:
+Code : scall
+Arg 1 : 1
+Arg 1 : 1
 
 Code : stop
 
 Instructions machine générées, pas d'erreurs
 
-Binaire : 1101000000000000000000101000001
-Binaire : 1101000010000000000000000000010
-Binaire : 0
-Binaire : 10000100000000000000000100010
-Binaire : 10000000100000000000000011100000
-Binaire : 11000101000000000000000100001
-Binaire : 1111000000000000000000001000000
-Binaire : 0
+Binaire : 10010000000000000000000000000000
+Binaire : 10010000001000000000000000000000
 Binaire : 10011000000000000000000000000000
