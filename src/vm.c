@@ -378,7 +378,8 @@ int main( int argc, char * argv[] )
     }
   fichier_sortie = fopen(file_output,"w");
   system("cat .bonjour");
-  createCode(file_input,program);
+  if(createCode(file_input,program)==-1)
+    return 0;
   t1 = clock();
   run();
   t2 = clock();

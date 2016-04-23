@@ -189,7 +189,7 @@ void createInstruc(char * mot, unsigned *breg1, unsigned * breg2, unsigned *boo,
 }
 	
 
-void AnalyseText(const char * filepath, Tableau *tab){
+int AnalyseText(const char * filepath, Tableau *tab){
 	logfichier = fopen("logfichier.txt","a");
 	fprintf(logfichier,"Ouverture de : %s\n",filepath);
 	FILE * file=NULL;
@@ -240,11 +240,14 @@ void AnalyseText(const char * filepath, Tableau *tab){
 	else
 	{
 		fprintf(logfichier,"Fichier introuvable\n");
+		printf("Error: Fichier Introuvable\n");
+		return -1;
 	} 
 	fprintf(logfichier,"\n");
 	fprintf(logfichier,"Fin instructions. \n");
 	fprintf(logfichier,"\n");
 	fclose(logfichier);	
+	return 0;
 }
 
 void AnalyseLexique(Tableau * tab,unsigned Commande[10000]){
@@ -262,6 +265,7 @@ void AnalyseLexique(Tableau * tab,unsigned Commande[10000]){
 	unsigned *bparam=malloc(16*sizeof(unsigned));
 	unsigned *breg2=malloc(5*sizeof(unsigned));
 	unsigned INSTRUC;
+
 	
 	fprintf(logfichier,"Debut de generation des instructions binaire\n");
 	courant=tab;

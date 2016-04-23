@@ -13,13 +13,14 @@ char * bin (unsigned long int i)
 
 
 
-void createCode (const char *filepath,unsigned Commande[1000]){ 
+int createCode (const char *filepath,unsigned Commande[1000]){ 
 	system("rm logfichier.txt 2> /dev/null");
 	
 	
 	Tableau *tab = malloc(sizeof(Tableau));
 		
-	AnalyseText(filepath, tab);
+	if (AnalyseText(filepath, tab)==-1)
+	  return -1;
 	
 	AnalyseLexique(tab,Commande);
 	int j=0;
@@ -31,5 +32,6 @@ void createCode (const char *filepath,unsigned Commande[1000]){
 	}
 	fprintf(logfichier,"Binaire : %s\n",bin(Commande[j]));
 	fclose(logfichier);
+	return 0;
 	
 }

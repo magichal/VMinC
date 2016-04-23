@@ -18,8 +18,8 @@ struct Tableau_{
 };
 
 /* Permet de récupérer le text et de le stocker dans un tableau, cf la structure */
-void AnalyseText(const char * filepath, Tableau * LEX);
+int AnalyseText(const char * filepath, Tableau * LEX);
 /*Permet de générer la commande sous forme de tableau Hexa */
 void AnalyseLexique(Tableau * tab,unsigned Commande[10000]);
 /*génère le code */
-void createCode(const char * filepath,unsigned Commande[10000]);
+int createCode(const char * filepath,unsigned Commande[10000]);
